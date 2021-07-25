@@ -9,31 +9,70 @@
     />
   </head>
   <body>
-    <div class="w-screen h-screen flex items-center">
-      <div class="w-1/2 h-96 flex flex-col shadow-lg bg-white">
-        <div class="p-4 flex items-center bg-green-200">
-          <input
+    <div class="w-screen h-screen flex">
+      <div
+        class="w-full h-screen border-1 border-gray-300 flex flex-col bg-white"
+      >
+        <div
+          class="
+            p-3
+            h-15
+            flex
+            items-center
+            shadow-sm
+            border-b-2 border-gray-400
+            bg-gray-200
+          "
+        >
+          Choose one or more items. Then press "Confirm".
+
+          <!-- <input
             type="text"
             class="w-full h-10 border rounded-md bg-gray-50"
             placeholder="Search..."
-          />
+          /> -->
         </div>
         <div
           id="canvas"
-          class="h-0 w-full flex-grow space-y-4 mx-auto overflow-scroll"
+          class="h-screen w-full flex-grow space-y-1 overflow-scroll"
         >
           <!--  -->
         </div>
 
-        <div class="flex items-center p-2 bg-yellow-200">
+        <div
+          class="
+            flex
+            grid grid-cols-2
+            gap-2
+            place-content-center
+            border-t-2 border-gray-400
+            p-2
+            bg-white-200
+          "
+        >
           <button
+            id="cancel"
             class="
               h-10
-              mx-auto
+              font-semibold
+              w-100
+              text-white
+              bg-blue-600
+              rounded-md
+              p-2
+            "
+          >
+            Cancel
+          </button>
+          <button
+            id="confirm"
+            class="
+              h-10
+              w-100
               font-semibold
               text-white
-              bg-purple-200
-              rounded-full
+              bg-blue-600
+              rounded-md
               p-2
             "
           >

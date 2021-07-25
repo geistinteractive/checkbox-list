@@ -1,69 +1,84 @@
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./style.css";
-
+// import "bootstrap/dist/css/bootstrap.min.css";
+// import "./style.css";
+import "regenerator-runtime/runtime.js";
+import { callFMScript, fetch } from "fm-webviewer-fetch";
+import { parseResponse } from "../utils/utils";
 const form = document.getElementById("form");
-const data = [
-  { label: "One", id: 1 },
-  { label: "Two", id: 2 },
-  { label: "Three", id: 3 },
-  { label: "Four", id: 4 },
-];
-const value = 1;
 
-data.forEach((item) => {
-  const template = `<div
+const getData = async () => {
+  let req = { layouts: "Choices" };
+  console.log(req);
+  let result = await fetch("Get Data", req);
+  // return;
+  result = parseResponse(result);
+  console.log(result);
+
+  return result.data;
+};
+
+window.loadList = async (params) => {
+  const data = await getData();
+  console.log("DATA", data);
+
+  data.forEach((item) => {
+    const id = item.fieldData.PrimaryKey;
+    const label = item.fieldData.Label;
+    const template = `<div id=${"row_" + id}
             class="
+            hover:bg-gray-100
               sample
-              h-16
               flex
+              h-7
+              text-sm
               item-center
-              bg-blue-300
-              text-white
-              font-semibold
+              bg-blue-100
+              text-gray
             "
           >
           <div class="flex items-center space-x-2 p-2">
-          <input type="checkbox" data--itemId="${item.id}" />
-            <div class="mx-">${item.label}</div>
+
+          <input label = ${label} type="checkbox" class="checked:bg-blue-600"  addEventListener("click", ${(
+      e
+    ) => {
+      e.stopPropagation();
+    }}) id="${id}" />
+            <div class="mx-">${label}</div>
             <div>
           </div>`;
-  const el = document.createElement("div");
-  el.innerHTML = template;
-  const d = el.firstChild;
-  document.querySelector("#canvas").appendChild(d);
-});
 
-/*
-data.forEach((i) => {
-  const cb = document.createElement("input");
-  const d = document.createElement("div");
-  d.className = "p-2";
-  cb.type = "checkbox";
-  cb.name = i.label;
-  cb.id = i.id;
+    const el = document.createElement("div");
+    el.innerHTML = template;
 
-  var labelForBox = document.createElement("label");
-  labelForBox.style = "padding-left:10px";
-  labelForBox.htmlFor = i.id;
-  labelForBox.appendChild(document.createTextNode(i.label));
+    const d = el.firstChild;
+    d.addEventListener("click", (d) => {
+      const t = d.target.getAttribute("id").split("_")[1];
+      if (t) {
+        const currValue = document.getElementById(t).checked;
+        document.getElementById(t).checked = !currValue;
+        // const row = document.getElementById("row_" + t);
+        // row.classList.remove("bg-blue-100");
+        // row.classList.add("bg-red-100");
+      }
+      d.stopPropagation();
+    });
+    document.querySelector("#canvas").appendChild(d);
+  });
 
-  d.appendChild(cb);
-  d.appendChild(labelForBox);
-  form.appendChild(d);
-});
-*/
+  document.getElementById("cancel").addEventListener("click", function () {
+    const obj = { action: "close", data: "" };
+    callFMScript("CheckList Actions", obj);
+  });
 
-document.querySelector("button").addEventListener("click", (e) => {
-  e.preventDefault();
-  const values = [...document.querySelectorAll('input[type="checkbox"]')].map(
-    (input) => ({
-      value: input.checked,
-      id: input.getAttribute("data--itemId"),
-    })
-  );
-  console.log(values);
-});
-// document.getElementById("dataList").addEventListener("onsubmit", () => {
-//   const values = form.getElementsByTagName("input");
-//   console.log(values);
-// });
+  document.getElementById("confirm").addEventListener("click", (e) => {
+    e.preventDefault();
+    const values = [...document.querySelectorAll('input[type="checkbox"]')].map(
+      (input) => ({
+        value: input.checked,
+        id: input.getAttribute("id"),
+        label: input.getAttribute("label"),
+      })
+    );
+    const obj = { action: "confirm", data: values };
+    callFMScript("CheckList Actions", obj);
+  });
+};
